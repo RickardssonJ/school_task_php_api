@@ -12,29 +12,19 @@ class App
         $response = array();
 
 
-        // if ($limit > 20 || $limit < 0) {
-        //     $error = "Please enter a limit between 1 and 20";
-        //     $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        //     echo $json;
-        //     exit();
-        // } else if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
-        //     $error = "Bad request category does not exist";
-        //     $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        //     echo $json;
-        //     exit();
-        // }
-
-        if ($limit && $category) {
+        if ($limit) {
             try {
-                $pokemons =  self::getCategory($category, $data);
-                $response = self::getLimit($limit, $pokemons);
+                $response = self::getLimit($limit, $data);
             } catch (Exception $error) {
-                echo $error->getMessage();
+                array_push(self::$errors, ['Show' => $error->getMessage()]);
             }
-        } else if ($limit) {
-            $response = self::getLimit($limit, $data);
-        } else if ($category) {
-            $response =  self::getCategory($category, $data);
+        }
+        if ($category) {
+            try {
+                $response =  self::getCategory($category, $data, $limit);
+            } catch (Exception $error) {
+                array_push(self::$errors, ['Category' => $error->getMessage()]);
+            }
         } else {
             $response = $data;
         }
@@ -53,7 +43,7 @@ class App
     public static function getLimit($limit, $data)
     {
         if ($limit > 20 || $limit < 0) {
-            throw new Exception("Limit needs to be between 1 and 20");
+            throw new Exception("Show needs to be between 1 and 20");
         }
 
         $output = array();
@@ -65,23 +55,34 @@ class App
         return $output;
     }
 
-    public static function getCategory($category, $data)
+    public static function getCategory($category, $data, $limit)
     {
+
+        if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
+            throw new Exception("Category not found");
+        }
         $output = array();
+        $newOutput = array();
 
         foreach ($data as $value) {
             if ($value['category'] == $category) {
                 array_push($output, $value);
             }
         }
-        return $output;
+        $randomIndexes = self::getRandomIndexes(0, count($output) - 1, $limit);
+
+        foreach ($randomIndexes as $value) {
+            array_push($newOutput, $output[$value]);
+        }
+
+        return $newOutput;
     }
 
     public static function renderData($allData)
     {
         if (self::$errors) {
-            echo "iam in errors";
-            print_r(self::$errors);
+            $json = json_encode(self::$errors, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            echo $json;
         } else {
             $json = json_encode($allData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             echo $json;
