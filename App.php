@@ -1,5 +1,5 @@
 <?PHP
-// || $category != "grass" || $category != "electric" || $category != "water" || $category != false
+
 class App
 {
 
