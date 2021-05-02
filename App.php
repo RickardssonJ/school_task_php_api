@@ -54,16 +54,15 @@ class App
     {
         if ($limit > 20 || $limit < 0) {
             throw new Exception("Limit needs to be between 1 and 20");
-        } else {
-
-            $output = array();
-            $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
-
-            foreach ($randomIndexes as $value) {
-                array_push($output, $data[$value]);
-            }
-            return $output;
         }
+
+        $output = array();
+        $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
+
+        foreach ($randomIndexes as $value) {
+            array_push($output, $data[$value]);
+        }
+        return $output;
     }
 
     public static function getCategory($category, $data)
