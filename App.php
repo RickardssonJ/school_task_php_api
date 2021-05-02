@@ -11,12 +11,12 @@ class App
 
 
         if ($limit > 20 || $limit < 0) {
-            $error = "Ange ett antal mellan 1 och 20";
+            $error = "Please enter a limit between 1 and 20";
             $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             echo $json;
             exit();
         } else if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
-            $error = "Vald kategori finns ej";
+            $error = "Bad request category does not exist";
             $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             echo $json;
             exit();
