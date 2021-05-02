@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header("Referrer-Policy: no-referrer");
 
-require_once 'products.php';
+require_once '../products.php';
+require_once '../App.php';
 
-$json = json_encode($pokemonData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-echo $json;
+App::main($pokemonData);
