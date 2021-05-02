@@ -3,6 +3,8 @@
 class App
 {
 
+    public static $errors = array();
+
     public static function main($data)
     {
         $limit = $_GET['show'] ?? false;
@@ -10,21 +12,25 @@ class App
         $response = array();
 
 
-        if ($limit > 20 || $limit < 0) {
-            $error = "Please enter a limit between 1 and 20";
-            $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            echo $json;
-            exit();
-        } else if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
-            $error = "Bad request category does not exist";
-            $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            echo $json;
-            exit();
-        }
+        // if ($limit > 20 || $limit < 0) {
+        //     $error = "Please enter a limit between 1 and 20";
+        //     $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        //     echo $json;
+        //     exit();
+        // } else if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
+        //     $error = "Bad request category does not exist";
+        //     $json = json_encode($error, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        //     echo $json;
+        //     exit();
+        // }
 
         if ($limit && $category) {
-            $pokemons =  self::getCategory($category, $data);
-            $response = self::getLimit($limit, $pokemons);
+            try {
+                $pokemons =  self::getCategory($category, $data);
+                $response = self::getLimit($limit, $pokemons);
+            } catch (Exception $error) {
+                echo $error->getMessage();
+            }
         } else if ($limit) {
             $response = self::getLimit($limit, $data);
         } else if ($category) {
@@ -46,13 +52,18 @@ class App
 
     public static function getLimit($limit, $data)
     {
-        $output = array();
-        $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
+        if ($limit > 20 || $limit < 0) {
+            throw new Exception("Limit needs to be between 1 and 20");
+        } else {
 
-        foreach ($randomIndexes as $value) {
-            array_push($output, $data[$value]);
+            $output = array();
+            $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
+
+            foreach ($randomIndexes as $value) {
+                array_push($output, $data[$value]);
+            }
+            return $output;
         }
-        return $output;
     }
 
     public static function getCategory($category, $data)
@@ -69,7 +80,12 @@ class App
 
     public static function renderData($allData)
     {
-        $json = json_encode($allData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        echo $json;
+        if (self::$errors) {
+            echo "iam in errors";
+            print_r(self::$errors);
+        } else {
+            $json = json_encode($allData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            echo $json;
+        }
     }
 }
