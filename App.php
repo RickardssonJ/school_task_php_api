@@ -47,13 +47,13 @@ class App
         }
 
         $output = array();
-        // $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
+        $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
 
-        // foreach ($randomIndexes as $value) {
-        //     array_push($output, $data[$value]);
-        // }
-        // echo "OUTPUT";
-        // print_r($output);
+        foreach ($randomIndexes as $value) {
+            array_push($output, $data[$value]);
+        }
+        echo "OUTPUT";
+        print_r($output);
         return $output;
     }
 
