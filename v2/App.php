@@ -7,28 +7,26 @@ class App
 
     public static function main($data)
     {
-        $limit = $_GET['show'] ?? false;
+        $limit = $_GET['limit'] ?? false;
         $category =  $_GET['category'] ?? false;
         $response = array();
 
-
-        if ($limit) {
-            try {
-                $response = self::getLimit($limit, $data);
-            } catch (Exception $error) {
-                array_push(self::$errors, ['Show' => $error->getMessage()]);
-            }
-        }
         if ($category) {
             try {
-                $response =  self::getCategory($category, $data, $limit);
+                $response =  self::get_category($category, $data);
             } catch (Exception $error) {
                 array_push(self::$errors, ['Category' => $error->getMessage()]);
             }
         } else {
             $response = $data;
         }
-
+        if ($limit) {
+            try {
+                $response = self::get_limit($limit, $response);
+            } catch (Exception $error) {
+                array_push(self::$errors, ['limit' => $error->getMessage()]);
+            }
+        }
         self::renderData($response);
     }
 
@@ -40,10 +38,11 @@ class App
         return array_slice($numbers, 0, $quantity);
     }
 
-    public static function getLimit($limit, $data)
+
+    public static function get_limit($limit, $data)
     {
         if ($limit > 20 || $limit < 0) {
-            throw new Exception("Show needs to be between 1 and 20");
+            throw new Exception("limit needs to be between 1 and 20");
         }
 
         $output = array();
@@ -52,32 +51,26 @@ class App
         foreach ($randomIndexes as $value) {
             array_push($output, $data[$value]);
         }
-        echo "OUTPUT";
-        print_r($output);
+
         return $output;
     }
 
-    public static function getCategory($category, $data, $limit)
+    public static function get_category($category, $data)
     {
 
         if ($category != "fire" && $category != "grass" && $category != "electric" && $category != "water" && $category != false) {
             throw new Exception("Category not found");
         }
         $output = array();
-        $newOutput = array();
+
 
         foreach ($data as $value) {
             if ($value['category'] == $category) {
                 array_push($output, $value);
             }
         }
-        $randomIndexes = self::getRandomIndexes(0, count($output) - 1, $limit);
 
-        foreach ($randomIndexes as $value) {
-            array_push($newOutput, $output[$value]);
-        }
-
-        return $newOutput;
+        return $output;
     }
 
     public static function renderData($allData)
