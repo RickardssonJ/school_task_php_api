@@ -6,6 +6,6 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header("Referrer-Policy: no-referrer");
 
 require_once '../products.php';
-require_once '../App.php';
+require_once './App.php';
 
 App::main($pokemonData);
