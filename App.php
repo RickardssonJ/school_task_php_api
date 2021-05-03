@@ -47,11 +47,13 @@ class App
         }
 
         $output = array();
-        $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
+        // $randomIndexes = self::getRandomIndexes(0, count($data) - 1, $limit);
 
-        foreach ($randomIndexes as $value) {
-            array_push($output, $data[$value]);
-        }
+        // foreach ($randomIndexes as $value) {
+        //     array_push($output, $data[$value]);
+        // }
+        // echo "OUTPUT";
+        // print_r($output);
         return $output;
     }
 
@@ -84,6 +86,7 @@ class App
             $json = json_encode(self::$errors, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             echo $json;
         } else {
+            echo "RENDER DATA";
             $json = json_encode($allData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             echo $json;
         }
